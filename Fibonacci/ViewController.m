@@ -46,7 +46,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell_resuse_id"];
     if (self.fibResultsArray.count > 0) {
-        cell.textLabel.text = [self.fibResultsArray[indexPath.row] stringValue];
+        cell.textLabel.text = [NSString stringWithFormat:@"%ld: %@", (long)indexPath.row, [self.fibResultsArray[indexPath.row] stringValue]];
     }
     
     return cell;
@@ -61,17 +61,21 @@
 
 -(void)getFibSequence:(NSUInteger)position {
     
-    [self.fibResultsArray removeAllObjects];
-    
     int first = 0;
-    [self.fibResultsArray addObject:[NSNumber numberWithInt:first]];
     int second = 1;
-    [self.fibResultsArray addObject:[NSNumber numberWithInt:second]];
-    int result = first + second;
+    int result;
     
-    for (int i = second+result; i < position; i++) {
+    if (self.fibResultsArray.count < 3) {
+        [self.fibResultsArray addObject:[NSNumber numberWithInt:first]];
+        [self.fibResultsArray addObject:[NSNumber numberWithInt:second]];
+    } else {
+        first = [[self.fibResultsArray objectAtIndex:self.fibResultsArray.count-2] integerValue];
+        second = [[self.fibResultsArray objectAtIndex:self.fibResultsArray.count-1] integerValue];
+    }
+    
+    for (int i = self.fibResultsArray.count; i < position; i++) {
         result = first + second;
-        [self.fibResultsArray addObject:[NSNumber numberWithInt:result]];
+        [self.fibResultsArray addObject:[NSNumber numberWithInt:first + second]];
         first = second;
         second = result;
     }
